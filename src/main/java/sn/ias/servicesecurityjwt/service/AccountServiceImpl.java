@@ -1,5 +1,6 @@
 package sn.ias.servicesecurityjwt.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sn.ias.servicesecurityjwt.dto.AppRolesDto;
@@ -18,17 +19,22 @@ public class AccountServiceImpl implements AccountService {
     private AppUserRepository appUserRepository;
     private AppRoleRepository appRoleRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     private Converter converter;
 
-    public AccountServiceImpl(AppUserRepository appUserRepository, AppRoleRepository appRoleRepository, Converter converter) {
+    public AccountServiceImpl(AppUserRepository appUserRepository, AppRoleRepository appRoleRepository, Converter converter, PasswordEncoder passwordEncoder) {
         this.appUserRepository = appUserRepository;
         this.appRoleRepository = appRoleRepository;
         this.converter = converter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public AppUserDto saveUser(AppUserDto appUserdto) {
         AppUser appUser = appUserRepository.save(converter.AppUserDtoToAppUserEntity(appUserdto));
+        String pwd = appUser.getPassword();
+        appUser.setPassword(passwordEncoder.encode(pwd));
         return converter.AppUserEntityToAppUserDto(appUser);
     }
 

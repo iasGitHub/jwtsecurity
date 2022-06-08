@@ -3,6 +3,7 @@ package sn.ias.servicesecurityjwt.web;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import sn.ias.servicesecurityjwt.dto.AppUserDto;
@@ -14,7 +15,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+
 @RequiredArgsConstructor
 public class UserResource {
 
@@ -24,10 +25,17 @@ public class UserResource {
         this.userService = userService;
     }
 
+    @PostAuthorize("hasAuthority('Administrateur')")
     @GetMapping("/users")
     public List<AppUserDto> getUsers() {
-
         return userService.findUsers();
+    }
+
+    @PostAuthorize("hasAuthority('Administrateur')")
+    @PostMapping("/addRoleToUser/{username}/{roleName}")
+    public Object addRoleToUser(@PathVariable String username, @PathVariable String roleName) {
+        userService.addRoleToUser(username, roleName);
+        return "Utilisateur mis à jour avec succès !";
     }
 
 

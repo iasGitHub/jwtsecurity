@@ -13,6 +13,6 @@ public interface AccountService {
     public AppRolesDto saveRoles(AppRolesDto appRolesdto);
     public AppUserDto loadAppUserByUsername (String username);
     public List<AppUserDto> findUsers();
-    void addRoleToUser(String email, String roleName);
+    void addRoleToUser(String username, String roleName);
 
 }
